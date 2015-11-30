@@ -36,4 +36,21 @@ public class mcliente
       return msg;
     }
   }
+  
+  public static ResultSet lcliente(Cliente cl){
+    Connection conn = null;
+    try { conn=ConexaoManutencao.getConexao();
+          String sql="SELECT * FROM cliente";
+          if(cl.getCpf()!=null)
+            sql+="WHERE cpf='"+cl.getCpf()+"'";
+          Statement st = conn.createStatement();
+          ResultSet rs = st.executeQuery(sql);
+          rs.last();
+          int n = rs.getRow();
+          if (n==0) return null;
+          else return rs;
+    }
+    catch (Exception e){String msg = "Error "+ e; 
+    return null;}
+  }
 }

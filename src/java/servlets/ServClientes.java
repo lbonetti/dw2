@@ -7,6 +7,8 @@ package servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -40,15 +42,29 @@ public class ServClientes extends HttpServlet
     String l = request.getParameter("l");
     dao.Cliente cl = new dao.Cliente(request.getParameter("cpf"), request.getParameter("nome"));
     String msg="";
-    
-    try (PrintWriter out = response.getWriter())
+    PrintWriter out = response.getWriter();
+    try 
     {
       if("ic".equals(l)){
         if("".equals(cl.getCpf()) || "".equals(cl.getNome()))
-          msg="Campos obrigatórios não preenchidos.";
+          msg="Campos obrigatórios não preenchidos.";       
         else
           msg=dao.mcliente.icliente(cl);
       }
+      if("lc".equals(l))
+        {
+           ResultSet rs = dao.mcliente.lcliente(cl);
+           if (rs==null) msg="Nenhum Cliente Cadastrado";
+           else
+           {
+             msg+="<table border='1'>";
+             rs.first();
+             do
+             {
+              msg+="<tr><td>"+rs.getString("cpf")+"</td><td>"+rs.getString("nome")+"</td></tr>";
+             } while (rs.next());
+           }
+        }
       else{msg="Não implementada a opção " + l;
         
       }
@@ -61,10 +77,14 @@ public class ServClientes extends HttpServlet
       out.println("<body>");
       out.println("<h1>Opção " + l + "</h1>");
       out.println("<h1>CPF " + cl.getCpf() + " NOME " + cl.getNome() + "</h1>");
-      out.println("<h1>Mensagem: " + msg + "</h1>");
+      out.println("<br>" + msg);
       out.println("</body>");
       out.println("</html>");
     }
+    catch(SQLException e)
+            {
+              out.println("Erro "+e);
+            }
   }
 
   // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
