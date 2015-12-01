@@ -51,6 +51,7 @@ public class ServClientes extends HttpServlet
         else
           msg=dao.mcliente.icliente(cl);
       }
+      else
       if("lc".equals(l))
         {
            ResultSet rs = dao.mcliente.lcliente(cl);
@@ -65,6 +66,26 @@ public class ServClientes extends HttpServlet
              } while (rs.next());
            }
         }
+      else
+      if ("ac".equals(l))
+         {ResultSet rs = dao.mcliente.lcliente(cl);
+          if(rs==null) msg="Cliente não encontrado para alterar";
+          else{cl.setCpf(rs.getString("cpf")); cl.setNome(rs.getString("nome"));
+               out.println("<form action='ServClientes?l=aac' method='post'>");
+               out.println(cl.getCpf()+"  CPF: <input type='hidden' name='cpf' value='"+
+                           cl.getCpf()+"'/><br>");
+               out.println("Altere Nome do Cliente: <input type='text' name='nome' value='"+
+                           cl.getNome()+"'/><br>");         
+               out.println("<input type='submit' value='Alterar' /></form>");} 
+         }
+      else
+      if ("aac".equals(l))
+      {String rs = dao.mcliente.acliente(cl);
+       if ("1".equals(rs))
+          {msg = "Cliente alterado";}
+       else msg=rs;   
+      }
+
       else{msg="Não implementada a opção " + l;
         
       }

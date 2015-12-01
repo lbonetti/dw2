@@ -40,7 +40,7 @@ public class mcliente
   public static ResultSet lcliente(Cliente cl){
     Connection conn = null;
     try { conn=ConexaoManutencao.getConexao();
-          String sql="SELECT * FROM cliente";
+          String sql="SELECT * FROM cliente ";
           if(cl.getCpf()!=null)
             sql+="WHERE cpf='"+cl.getCpf()+"'";
           Statement st = conn.createStatement();
@@ -52,5 +52,16 @@ public class mcliente
     }
     catch (Exception e){String msg = "Error "+ e; 
     return null;}
+  }
+  
+    public static String acliente(Cliente cl){
+  Connection conn = null;
+  try { conn=ConexaoManutencao.getConexao();
+        String sql="UPDATE cliente SET nome='"+cl.getNome();
+        sql += "' WHERE cpf='"+cl.getCpf()+"'";
+        Statement st = conn.createStatement();
+        int rs = st.executeUpdate(sql);
+        return String.valueOf(rs);
+  } catch (SQLException e){return "Erro "+e.getMessage();}
   }
 }
